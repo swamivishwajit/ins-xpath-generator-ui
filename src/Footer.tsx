@@ -7,13 +7,13 @@ const Footer: React.FC = () => {
     >
       <div className="container" style={{ textAlign: "center" }}>
         <span className="text-muted">
-          Made with 
+          Made with
           <i
             className="fa fa-heart"
             style={{ color: "red" }}
             aria-hidden="true"
           />{" "}
-            By Infosys
+          By Infosys
         </span>
       </div>
     </footer>

@@ -4,17 +4,16 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 
 import Axios from "axios";
-import { GridOptions } from "ag-grid-community";
 
 interface Xpath {
   key: string;
   value: number;
 }
 class Upload extends Component {
+  gridApi: any;
   state = {
-    file: new Blob(),
+    file: '',
     fileType: "ACO",
-
     columnDefs: [
       {
         headerName: "XPath",
@@ -43,15 +42,11 @@ class Upload extends Component {
   }
 
   onFileTypeChange(e: any) {
-    console.log(e.target.value);
-
     this.setState({
       fileType: e.target.value
     });
   }
 
-  public gridOptions?:GridOptions;
-  public gridApi: any;
   onBtExport = () => {
     this.gridApi.exportDataAsCsv();
   };
@@ -60,31 +55,58 @@ class Upload extends Component {
   }
 
   async submitForm(e: any) {
-//    let URL = "http://xpath-gen.cfapps.io/xpath";
-let URL = "http://localhost:8091/xpath";
+    
+    //code to refresh grid
+    this.setState({
+      rowData: Array<Xpath>()
+    });
+    //    let URL = "http://xpath-gen.cfapps.io/xpath";
+    let URL = "http://localhost:8091/xpath";
     let formData = new FormData();
     formData.append("file", this.state.file);
     formData.append("fileType", this.state.fileType);
-
-    const response = await Axios({
+    
+    /*const response = await Axios({
       method: "post",
       url: URL,
       data: formData
     });
-
-    console.log("**************************"+response.statusText);
+    console.log("Response Status" + response.status);
     console.log("The state**********" + response.data);
+    alert(response.statusText);
     this.setState({
       rowData: response.data
-    });
+    }); 
+    
+    
+    */
+
+    Axios({
+      method: 'post',
+      url: URL,
+      data: formData
+    })
+     .then(response => {
+      this.setState({
+        rowData: response.data
+      });
+     })
+     .catch(error => {
+       alert("Error Occured"+error.toString());
+     });
+
+       
   }
 
   render() {
+    const { columnDefs, rowData } = this.state;
     return (
       <main role="main" className="flex-shrink-0">
         <div className="container">
           <h1 className="mt-5" />
-          <p className="lead">Please select Appropriate Xml File and type</p>
+          <div className="alert alert-info my-alert" role="alert">
+            Please Select Appropriate xml File To Get X-PATH
+          </div>
           {/* <form> */}
           <div className="form-row">
             <div className="form-group col-md-4">
@@ -123,17 +145,16 @@ let URL = "http://localhost:8091/xpath";
         <div className="container">
           <div style={{ height: "300px" }} className="ag-theme-balham">
             <AgGridReact
-              columnDefs={this.state.columnDefs}
-              rowData={this.state.rowData}
-              onGridReady={this.onGridReady}
-              gridOptions={this.gridOptions}
+              columnDefs={columnDefs}
+              rowData={rowData}
+              onGridReady={this.onGridReady.bind(this)}
             />
 
             <button
-              className="btn btn-success"
+              className="btn btn-success" style={{marginTop:"10px"}}
               onClick={this.onBtExport.bind(this)}
             >
-              >Export
+              Export
             </button>
           </div>
         </div>

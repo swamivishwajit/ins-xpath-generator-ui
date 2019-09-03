@@ -17,3 +17,10 @@
     font-size: 3.5rem;
   }
 }
+.my-alert {
+  font-weight: 20px;
+  font-style: italic;
+}
+body {
+  overflow-y: scroll;
+}
