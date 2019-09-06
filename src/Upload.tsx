@@ -4,15 +4,12 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 
 import Axios from "axios";
+import XpathData from "./XPathData";
 
-interface Xpath {
-  key: string;
-  value: number;
-}
 class Upload extends Component {
   gridApi: any;
   state = {
-    file: '',
+    file: "",
     fileType: "ACO",
     columnDefs: [
       {
@@ -32,7 +29,7 @@ class Upload extends Component {
         width: 300
       }
     ],
-    rowData: Array<Xpath>()
+    rowData: Array<XpathData>()
   };
 
   onChangeHandler(e: any) {
@@ -55,47 +52,30 @@ class Upload extends Component {
   }
 
   async submitForm(e: any) {
-    
     //code to refresh grid
     this.setState({
-      rowData: Array<Xpath>()
+      rowData: Array<XpathData>()
     });
-    //    let URL = "http://xpath-gen.cfapps.io/xpath";
+    // let URL = "http://xpath-gen.cfapps.io/xpath";
     let URL = "http://localhost:8091/xpath";
+
     let formData = new FormData();
     formData.append("file", this.state.file);
     formData.append("fileType", this.state.fileType);
-    
-    /*const response = await Axios({
+
+    Axios({
       method: "post",
       url: URL,
       data: formData
-    });
-    console.log("Response Status" + response.status);
-    console.log("The state**********" + response.data);
-    alert(response.statusText);
-    this.setState({
-      rowData: response.data
-    }); 
-    
-    
-    */
-
-    Axios({
-      method: 'post',
-      url: URL,
-      data: formData
     })
-     .then(response => {
-      this.setState({
-        rowData: response.data
+      .then(response => {
+        this.setState({
+          rowData: response.data
+        });
+      })
+      .catch(error => {
+        alert("Error Occured " + error);
       });
-     })
-     .catch(error => {
-       alert("Error Occured"+error.toString());
-     });
-
-       
   }
 
   render() {
@@ -105,7 +85,7 @@ class Upload extends Component {
         <div className="container">
           <h1 className="mt-5" />
           <div className="alert alert-info my-alert" role="alert">
-            Please Select Appropriate xml File To Get X-PATH
+            Please Select Appropriate xml File To Get XPath
           </div>
           {/* <form> */}
           <div className="form-row">
@@ -119,7 +99,7 @@ class Upload extends Component {
               />
             </div>
             <div className="form-group col-md-4">
-              <React.Fragment>State</React.Fragment>
+              <React.Fragment>Type</React.Fragment>
               <select
                 id="inputState"
                 className="form-control"
@@ -151,7 +131,8 @@ class Upload extends Component {
             />
 
             <button
-              className="btn btn-success" style={{marginTop:"10px"}}
+              className="btn btn-success"
+              style={{ marginTop: "10px" }}
               onClick={this.onBtExport.bind(this)}
             >
               Export
